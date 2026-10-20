@@ -1,0 +1,33 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+frontend/dist/
+backend/dist/
+dist/
+build/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Large Marketing Media & Video Binaries
+marketing_videos/*.mp4
+marketing_videos/*.mp3
+marketing_videos/explainer_audio/
+*.mp4
+*.mp3
+

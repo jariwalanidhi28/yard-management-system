@@ -1,0 +1,22 @@
+{
+  "name": "yard-management-system",
+  "version": "1.0.0",
+  "description": "Enterprise Yard Management System (YMS) using MERN Stack",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend install && npm --prefix frontend run build && npm --prefix backend install",
+    "start": "node backend/server.js",
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "start:backend": "npm --prefix backend start",
+    "start:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "seed": "node backend/scripts/seed.js",
+    "test:backend": "npm --prefix backend test",
+    "test:frontend": "npm --prefix frontend test",
+    "build:frontend": "npm --prefix frontend run build"
+  },
+  "keywords": ["yard-management", "logistics", "mern", "express", "react", "mongodb"],
+  "author": "YMS Engineering Team",
+  "license": "ISC"
+}
