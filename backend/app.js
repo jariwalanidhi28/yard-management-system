@@ -21,8 +21,15 @@ app.use(
   helmet({
     contentSecurityPolicy: false, // Allows flexible API usage
     crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
   })
 );
+
+// Serve built React frontend static assets FIRST before CORS & API middleware
+const frontendDistPath = path.join(__dirname, '../frontend/dist');
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+}
 
 // CORS configuration
 const clientOrigins = (process.env.CLIENT_URL || '')
@@ -35,16 +42,26 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000',
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. mobile apps, curl, tests)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+
+      // Allow configured origins, any Render deployment origin, or local dev
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.onrender.com') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1');
+
+      if (isAllowed) {
         callback(null, true);
       } else {
-        callback(new Error('Cross-Origin Request Blocked by CORS Policy.'));
+        callback(null, false);
       }
     },
     credentials: true,
@@ -95,10 +112,8 @@ app.get('/api/v1/auth/csrf-token', (req, res) => {
 // Versioned API routes
 app.use('/api/v1', apiRoutes);
 
-// Serve built React frontend in production or when dist folder exists
-const frontendDistPath = path.join(__dirname, '../frontend/dist');
+// SPA routing fallback: serve index.html for non-API navigation
 if (fs.existsSync(frontendDistPath)) {
-  app.use(express.static(frontendDistPath));
   app.get('*', (req, res, next) => {
     if (req.originalUrl.startsWith('/api')) {
       return next();
